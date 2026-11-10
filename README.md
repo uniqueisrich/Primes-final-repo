@@ -68,5 +68,8 @@ Acoustic Audio Signature: A unique soundwave or musical stem locked directly to 
 Keynotes on Resilience & Mobile Production
 Zero-Desktop Engineering: Following a workstation failure due to financial challenges, the entirety of Project Prime—smart contracts, architecture, and front-end interface—was conceptualized, written, debugged, and finalized on a Samsung Galaxy A02 mobile phone.
 Gas & Memory Optimization: Code logic was engineered to run cleanly under severe mobile bandwidth limitations while adhering to NEAR's 300 Tgas transaction execution caps.
-Proof of Concept to Infrastructure: Project Prime proves that financial and hardware constraints cannot stop pure structural innovation, establishing a foundation for grant funding and mainnet expansion
+Proof of Concept to Infrastructure: Project Prime proves that financial and hardware constraints cannot stop pure structural innovation, establishing a foundation for grant funding and mainnet expansion.
+
+main files and some photographs of handwritten and original manuscript are in the link provided below on google drive. Pls scan thoroughly to get a better understanding of the project      
+ https://drive.google.com/drive/folders/1oI-AFat0MwK-idOmCcGAenpvlwLEeNQo
 
