@@ -1,0 +1,241 @@
+/*!
+ * PROJECT PRIME: UNIQUEISRICH.NEAR
+ * NEAR Protocol Official Hackathon Demonstration Smart Contract
+ * 
+ * Core Features:
+ * - 4-Shard Native Architecture (Truth, Sound, Maths, Skill)
+ * - Hard-Capped 222 Node Limit per Shard (888 Total Genesis Cap)
+ * - Mining Gates: 100 NEAR Collateral Hold + Aje Token Verification + Narrative Proofs
+ * - Dynamic Dual-Media Generation: Procedural SVG Image + Acoustic Audio Binding
+ * - Binary Waveform Acoustic Verification Key (Decimal: 24949)
+ * - Active ITCN Defense & Threat Blacklist Gate
+ */
+
+use borsh::{BorshDeserialize, BorshSerialize};
+use near_sdk::borsh;
+use near_sdk::{env, near, AccountId, PanicOnDefault};
+use near_sdk::collections::UnorderedMap;
+
+pub const SHARD_CAPACITY: u32 = 222;
+pub const TOTAL_GENESIS_CAP: u32 = 888;
+pub const SOUND_SHARD_DECIMAL_KEY: u32 = 24949;
+pub const MIN_NEAR_COLLATERAL: u128 = 100_000_000_000_000_000_000_000_000; // 100 NEAR in yoctoNEAR
+
+#[near(serializers = [borsh, json])]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum ShardId {
+    TruthShard = 0, // Origin Telemetry
+    SoundShard = 1, // Binary Acoustic Data (24949)
+    MathsShard = 2, // Truth Gates & Logic
+    SkillShard = 3, // Positron Adaptability & Execution
+}
+
+#[near(serializers = [borsh, json])]
+#[derive(Clone, Debug)]
+pub struct ShardSentinelMetadata {
+    pub shard_id: ShardId,
+    pub sentinel_address: AccountId,
+    pub core_code: String,
+    pub decimal_val: u32,
+    pub minted_nodes: u32,
+}
+
+#[near(serializers = [borsh, json])]
+#[derive(Clone, Debug)]
+pub struct MiningProofSubmission {
+    pub holder_near_balance: u128,      // Must be >= 100 NEAR
+    pub holds_aje_token: bool,         // Ecosystem Aje Token holding (HOT Wallet / NEAR)
+    pub narrative_truth_proof: String, // Event/Truth proof dropped via storyline
+    pub community_tasks_completed: bool, // Social & community tasks verification
+}
+
+#[near(serializers = [borsh, json])]
+#[derive(Clone, Debug)]
+pub struct SovereignNFTMedia {
+    pub token_id: u32,
+    pub shard_id: ShardId,
+    pub owner_id: AccountId,
+    pub image_svg: String,      // Procedurally generated SVG visual
+    pub audio_url: String,      // Bound musical track or acoustic audio waveform
+    pub timestamp: u64,
+}
+
+#[near(contract_state)]
+#[derive(PanicOnDefault)]
+pub struct UniqueIsRichHackathonContract {
+    pub owner_id: AccountId,
+    pub sentinels: UnorderedMap<u8, ShardSentinelMetadata>,
+    pub itcn_blacklist: UnorderedMap<AccountId, bool>,
+    pub nft_records: UnorderedMap<u32, SovereignNFTMedia>,
+    pub total_genesis_minted: u32,
+    pub current_hash_rate: u64,
+}
+
+#[near]
+impl UniqueIsRichHackathonContract {
+    #[init]
+    pub fn new(owner_id: AccountId) -> Self {
+        assert!(!env::state_exists(), "Contract is already initialized");
+
+        let mut this = Self {
+            owner_id,
+            sentinels: UnorderedMap::new(b"s".to_vec()),
+            itcn_blacklist: UnorderedMap::new(b"b".to_vec()),
+            nft_records: UnorderedMap::new(b"n".to_vec()),
+            total_genesis_minted: 0,
+            current_hash_rate: 1000,
+        };
+
+        // Initialize 4 Core NEAR Shards
+        this.register_shard(ShardId::TruthShard, "shard_0.uniqueisrich.near", "10221301-ORIGIN-IB-LOS", 0);
+        this.register_shard(ShardId::SoundShard, "shard_1.uniqueisrich.near", "0110000101110101", SOUND_SHARD_DECIMAL_KEY);
+        this.register_shard(ShardId::MathsShard, "shard_2.uniqueisrich.near", "10221301-MATTHS", 0);
+        this.register_shard(ShardId::SkillShard, "shard_3.uniqueisrich.near", "SKILL-SN-APS", 0);
+
+        this
+    }
+
+    fn register_shard(&mut self, shard_id: ShardId, address: &str, core: &str, decimal: u32) {
+        let metadata = ShardSentinelMetadata {
+            shard_id,
+            sentinel_address: address.parse().unwrap(),
+            core_code: core.to_string(),
+            decimal_val: decimal,
+            minted_nodes: 0,
+        };
+        self.sentinels.insert(&(shard_id as u8), &metadata);
+    }
+
+    /// Primary Mining Function: Verifies proof gates (100 NEAR + Aje Token + Tasks + Narrative Proof) then mints L1 node
+    pub fn mine_l1_block(
+        &mut self,
+        shard_id: ShardId,
+        proof: MiningProofSubmission
+    ) -> String {
+        let predecessor = env::predecessor_account_id();
+
+        // 1. Check ITCN Blacklist Filter
+        assert!(
+            self.verify_itcn_clearance(predecessor.clone()),
+            "ACCESS DENIED: Account blocked by ITCN Anti-Siphoning Protocol"
+        );
+
+        // 2. Verify 100 NEAR Collateral Gate
+        assert!(
+            proof.holder_near_balance >= MIN_NEAR_COLLATERAL,
+            "MINING DENIED: Must hold a minimum of 100 NEAR balance"
+        );
+
+        // 3. Verify Aje Token Holding Gate
+        assert!(
+            proof.holds_aje_token,
+            "MINING DENIED: Ecosystem Aje Token holding required"
+        );
+
+        // 4. Verify Community Tasks Completion
+        assert!(
+            proof.community_tasks_completed,
+            "MINING DENIED: Community tasks (social/telemetry) incomplete"
+        );
+
+        // 5. Verify Narrative Truth/Event Proof Submission
+        assert!(
+            !proof.narrative_truth_proof.is_empty(),
+            "MINING DENIED: Storyline Proof of Truth/Event must be provided"
+        );
+
+        // 6. Check Global Genesis Cap (888 total)
+        assert!(
+            self.total_genesis_minted < TOTAL_GENESIS_CAP,
+            "GLOBAL CAP REACHED: Genesis layer strictly capped at 888 nodes"
+        );
+
+        let key = shard_id as u8;
+        let mut sentinel = self.sentinels.get(&key).expect("Shard sentinel not found");
+
+        // 7. Check Shard Capacity Limit (222 per shard)
+        assert!(
+            sentinel.minted_nodes < SHARD_CAPACITY,
+            "SHARD CAP REACHED: Shard capacity strictly capped at 222 nodes"
+        );
+
+        sentinel.minted_nodes += 1;
+        self.total_genesis_minted += 1;
+        let global_node_id = self.total_genesis_minted;
+
+        // Generate Procedural SVG Visual & Audio Binding
+        let generated_image = self.generate_procedural_svg(global_node_id, shard_id);
+        let bound_audio = self.generate_audio_binding(global_node_id, shard_id);
+
+        let media_record = SovereignNFTMedia {
+            token_id: global_node_id,
+            shard_id,
+            owner_id: predecessor,
+            image_svg: generated_image,
+            audio_url: bound_audio,
+            timestamp: env::block_timestamp(),
+        };
+
+        self.nft_records.insert(&global_node_id, &media_record);
+        self.current_hash_rate = self.current_hash_rate.saturating_mul(105) / 100;
+        self.sentinels.insert(&key, &sentinel);
+
+        format!(
+            "SUCCESS: Mined Node #{}/222 in Shard {:?}. Global Node ID: {}/888. Dynamic SVG Image & Audio File Bound!",
+            sentinel.minted_nodes, shard_id, global_node_id
+        )
+    }
+
+    /// Generates an on-chain SVG vector image for the mined block
+    fn generate_procedural_svg(&self, node_id: u32, shard_id: ShardId) -> String {
+        let color = match shard_id {
+            ShardId::TruthShard => "#00f0ff", // Cyan
+            ShardId::SoundShard => "#a855f7", // Purple
+            ShardId::MathsShard => "#fbbf24", // Gold
+            ShardId::SkillShard => "#10b981", // Emerald
+        };
+
+        format!(
+            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400' width='100%' height='100%'>"
+            "<rect width='400' height='400' fill='#080c14'/>"
+            "<circle cx='200' cy='200' r='140' stroke='{}' stroke-width='4' fill='none' opacity='0.8'/>"
+            "<text x='50%' y='45%' dominant-baseline='middle' text-anchor='middle' fill='{}' font-family='monospace' font-size='20'>PRIME L1 BLOCK #{}</text>"
+            "<text x='50%' y='60%' dominant-baseline='middle' text-anchor='middle' fill='#ffffff' font-family='monospace' font-size='14'>SHARD {:?} | KEY 24949</text>"
+            "</svg>",
+            color, color, node_id, shard_id
+        )
+    }
+
+    /// Generates the bound audio URL for the mined block
+    fn generate_audio_binding(&self, node_id: u32, shard_id: ShardId) -> String {
+        format!(
+            "https://arweave.net/uniqueisrich_sound_shard_{}_node_{}.wav",
+            shard_id as u8, node_id
+        )
+    }
+
+    /// View Function: Verifies binary acoustic waveform string (0110000101110101 -> 24949)
+    pub fn verify_artistry_binary(&self, binary_str: String) -> bool {
+        if binary_str != "0110000101110101" {
+            return false;
+        }
+        let parsed_decimal = u32::from_str_radix(&binary_str, 2).unwrap_or(0);
+        parsed_decimal == SOUND_SHARD_DECIMAL_KEY
+    }
+
+    /// Blacklists account attempting ITCN siphoning
+    pub fn register_itcn_violation(&mut self, offender_id: AccountId) {
+        assert_eq!(env::predecessor_account_id(), self.owner_id, "Only Prime owner can log ITCN violations");
+        self.itcn_blacklist.insert(&offender_id, &true);
+    }
+
+    /// View Function: Verify ITCN clearance
+    pub fn verify_itcn_clearance(&self, account_id: AccountId) -> bool {
+        !self.itcn_blacklist.get(&account_id).unwrap_or(false)
+    }
+
+    /// View Function: Fetch node dynamic media record
+    pub fn get_node_media(&self, node_global_id: u32) -> Option<SovereignNFTMedia> {
+        self.nft_records.get(&node_global_id)
+    }
+}
