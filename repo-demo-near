@@ -1,0 +1,99 @@
+PROJECT PRIME (uniqueisrich.near)
+Official NEAR Protocol Hackathon Submission & Technical Walkthrough
+1. Executive Summary & Track Alignment
+Project Prime is an immutable, multi-shard Layer-1 verification engine built natively on the NEAR Protocol. It protects intellectual property, acoustic waveforms, and narrative milestones using cryptographic proof gates, zero-knowledge intentions, and AI anomaly detection to defeat cognitive siphoning (ITCN) and psychological containment (MARO).
+Hackathon Track Alignment:
+Privacy & Private AI: Uses AI anomaly threat detection to scan incoming telemetry for siphoning patterns without revealing private raw manuscript data, combined with Zero-Knowledge (ZK) commitment schemes for Proof of Intentions.
+NFTs That Do Something (Utility NFTs): Shard nodes serve as active sovereign gatekeepers (capped at 222 per shard, 888 total) that grant access, execute threat blacklisting, and unlock dynamic acoustic waveform states.
+Games with Real Economics: Connects character narrative progression directly to the on-chain hash rate engine, driving a closed-loop economy with closed-circle auctions and physical/digital card exchange mechanics.
+Decentralized Ledger Infrastructure: Built exclusively for the NEAR Protocol, utilizing native cross-contract calls, Borsh serialization, and custom multi-shard state partitioning (shard_0.uniqueisrich.near to shard_3.uniqueisrich.near).
+2. The 4-Shard Architecture & Proof Gates
+                    [ UNIQUEISRICH GENESIS ROOT ]
+                                 │
+     ┌───────────────────────────┴───────────────────────────┐
+     ▼                                                       ▼
+[ SHARD 0: TRUTH ]                                  [ SHARD 1: SOUND ]
+• Origin Telemetry                                  • Binary Acoustic Mapping
+• 10221301-ORIGIN-IB-LOS                            • Binary 0110000101110101 -> 24949
+• Cap: 222 Nodes                                    • Cap: 222 Nodes
+     │                                                       │
+     ├───────────────────────────┬───────────────────────────┘
+     ▼                           ▼
+[ SHARD 2: MATHS ]          [ SHARD 3: SKILL ]
+• Logic & Truth Gates       • Positron Execution
+• 10221301-MATTHS           • Adaptability Protocol
+• Cap: 222 Nodes            • Cap: 222 Nodes
+
+
+3. Step-by-Step Judge Walkthrough
+Step 1: Wallet Connection & Shard Selection
+The user connects their NEAR Wallet (uniqueisrich.near). The dashboard displays network telemetry, master keys, and shard capacity meters.
++-----------------------------------------------------------------------------+
+|                     PROJECT PRIME: UNIQUEISRICH.NEAR                        |
+|       NEAR Hackathon // Privacy AI, Utility NFTs & Real Games Track         |
++-----------------------------------------------------------------------------+
+| Connected Account: uniqueisrich.near             Network: NEAR Mainnet      |
+| Acoustic Master Key: 24949                       Binary: 0110000101110101   |
++-----------------------------------------------------------------------------+
+| SELECT TARGET SHARD (222 Capacity Each)                                     |
+| [x] Shard 0: Truth Shard (Origin Telemetry & Birth Data)                    |
+| [ ] Shard 1: Sound Shard (Acoustic Waveforms & 24949 Key)                   |
+| [ ] Shard 2: Maths Shard (Truth Gates & Privacy Logic)                      |
+| [ ] Shard 3: Skill Shard (Positron Execution Engine)                        |
++-----------------------------------------------------------------------------+
+
+
+Step 2: Telemetry Input & Private AI Evaluation
+The user submits confidential telemetry. The Private AI engine screens the payload for ITCN siphoning threats before generating an on-chain commitment.
++-----------------------------------------------------------------------------+
+| TELEMETRY / MANUSCRIPT PAYLOAD INPUT                                        |
++-----------------------------------------------------------------------------+
+| > 10221301-ORIGIN-IB-LOS-PROOF-GENIUS-2026                                  |
+|                                                                             |
+| [ PRIVATE AI SCREENING ] Scanning for ITCN Cognitive Siphoning... CLEAN    |
++-----------------------------------------------------------------------------+
+|                           [ DEPLOY SOVEREIGN NODE ]                         |
++-----------------------------------------------------------------------------+
+
+
+Step 3: On-Chain Minting & Security Clearance
+The NEAR smart contract validates shard capacity, verifies that total mints do not exceed the 888 cap, and issues the sovereign utility NFT.
++-----------------------------------------------------------------------------+
+| TRANSACTION EXECUTION LOG                                                   |
++-----------------------------------------------------------------------------+
+| [OK] Private AI Siphon Shield: Passed                                       |
+| [OK] ITCN Blacklist Check: Cleared                                          |
+| [OK] Shard 0 Capacity Check: 1/222 Minted                                   |
++-----------------------------------------------------------------------------+
+| SUCCESS: Minted node #1/222 in Truth Shard. Global Genesis: 1/888           |
+| Tx Hash: 8xF3mQ9...NEAR_BLOCK_912044                                        |
++-----------------------------------------------------------------------------+
+
+
+4. Running the Testnet Demo via NEAR CLI
+# 1. Build WASM contract for NEAR
+cargo build --target wasm32-unknown-unknown --release
+
+# 2. Deploy to NEAR Testnet account
+near contract deploy uniqueisrich-demo.testnet \
+  use-file target/wasm32-unknown-unknown/release/uniqueisrich_hackathon_demo.wasm \
+  with-init-call new \
+  json-args '{"owner_id": "uniqueisrich-demo.testnet"}' \
+  send
+
+# 3. Test Artistry Binary Gate (0110000101110101 -> 24949)
+near contract call-function as-read-only uniqueisrich-demo.testnet \
+  verify_artistry_binary \
+  json-args '{"binary_str": "0110000101110101"}' \
+  network-config testnet
+
+# 4. Mint Utility Node on Shard 0 (Truth)
+near contract call-function as-transaction uniqueisrich-demo.testnet \
+  mint_sovereign_node \
+  json-args '{"shard_id": "TruthShard"}' \
+  prepaid-gas '100.000 Tgas' \
+  attached-deposit '0 NEAR' \
+  sign-as uniqueisrich-demo.testnet \
+  network-config testnet
+
+
